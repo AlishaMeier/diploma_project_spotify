@@ -1,0 +1,7 @@
+pytest
+requests
+selene>=2.0.0
+allure-pytest
+Appium-Python-Client
+python-dotenv
+pytest-xdist
