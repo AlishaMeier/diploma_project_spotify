@@ -1,2 +1,2 @@
-# diploma_project_papa_johns
+# diploma_project_spotify
 Diploma project
