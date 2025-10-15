@@ -1,7 +1,7 @@
-pytest
-requests
-selene>=2.0.0
-allure-pytest
-Appium-Python-Client
-python-dotenv
-pytest-xdist
+allure-python-commons
+selenium==4.36.0
+pytest==8.4.2
+allure-pytest==2.15.0
+selene==2.0.0rc9
+pydantic==2.12.2
+python-dotenv==1.1.1
