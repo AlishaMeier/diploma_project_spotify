@@ -1,102 +1,53 @@
 import pytest
 from selenium import webdriver
 from selene import browser
-import allure
-import requests
+from selene.support.shared import browser
 from dotenv import load_dotenv
 import os
-from selenium.webdriver.chrome.options import Options
+
+import allure
+
+
+# from spotify_project.utils import attach
+
+
 
 load_dotenv()
 
 SPOTIFY_USERNAME = os.getenv('SPOTIFY_USERNAME')
 SPOTIFY_PASSWORD = os.getenv('SPOTIFY_PASSWORD')
-# URL Selenoid
-SELENOID_URL = "http://localhost:4444/wd/hub"
-SELENOID_HOST = "localhost"  # Хост для получения видео
+
+# Настройки браузера
+browser.config.base_url = "https://open.spotify.com/"
+browser.config.timeout = 15.0  # Уменьшаем таймаут до разумного локального значения
+browser.config.window_width = 1300
+browser.config.window_height = 760
 
 
 
-def attach_video(session_id):
-
-    try:
-        # Формируем URL для скачивания видео (стандартный путь Selenoid)
-        video_url = f"http://{SELENOID_HOST}:4444/video/{session_id}.mp4"
-
-        response = requests.get(video_url, timeout=10)
-
-        if response.status_code == 200:
-            allure.attach(
-                response.content,
-                name="video_" + session_id,
-                attachment_type=allure.attachment_type.MP4
-            )
-        else:
-            print(f"Ошибка при получении видео (статус: {response.status_code})")
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, "rep_" + rep.when, rep)
+    return rep
 
 
-    except requests.exceptions.RequestException as e:
-        print(f"Ошибка HTTP-запроса при получении видео: {e}")
-
-
-
+# --- ФИКСТУРА БРАУЗЕРА (ОСНОВА: ЛОКАЛЬНЫЙ РЕЖИМ) ---
 @pytest.fixture(scope="function", autouse=True)
-def setup_browser(request):
-    options = Options()
-    session_id = None  # Переменная для хранения ID сессии
+def setup_browser():
 
-    selenoid_capabilities = {
-        "browserName": "chrome",
-        "browserVersion": "128.0",
-        "enableVNC": True,
-        "enableVideo": True,  # Включение записи видео
-    }
-    options.capabilities.update(selenoid_capabilities)
-
-    driver = webdriver.Remote(
-        command_executor=SELENOID_URL,
-        options=options
-    )
-
+    driver = webdriver.Chrome()
     browser.config.driver = driver
-    session_id = driver.session_id
-
-    browser.config.base_url = 'https://spotify.com'
-    browser.config.driver.set_window_size(1920, 1080)
+    browser.open(browser.config.base_url)
 
 
     yield
 
 
-    allure.attach(
-        browser.driver.get_screenshot_as_png(),
-        name='screenshot',
-        attachment_type=allure.attachment_type.PNG
-    )
-
-    for log_type, logs in browser.driver.get_logs().items():
-        log_content = '\n'.join(f'{log["timestamp"]} {log["level"]}: {log["message"]}' for log in logs)
-        allure.attach(
-            log_content,
-            name=f'{log_type} logs',
-            attachment_type=allure.attachment_type.TEXT
-        )
-
-    # 3. ОБЯЗАТЕЛЬНОЕ ДОБАВЛЕНИЕ ВИДЕО (ВО ВСЕХ СЛУЧАЯХ)
-    if session_id:
-        attach_video(session_id)
-
-    # --- 4. Закрытие браузера ---
-    browser.quit()
+    driver.quit()
 
 
-@pytest.hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_make_report(item, call):
-
-    outcome = yield
-    rep = outcome.get_result()
-    setattr(item, "rep_" + rep.when, rep)
-    return rep
 
 
 @pytest.fixture
@@ -106,20 +57,21 @@ def login_page():
 
 
 @pytest.fixture
-def home_page():
-    from spotify_project.pages.home_page import HomePage
-    return HomePage()
+def navigation_page():
+    from spotify_project.pages.navigation_page import NavigationPage
+    return NavigationPage()
 
 
 @pytest.fixture
-def playlist_page():
-    from spotify_project.pages.playlist_page import PlaylistPage
-    return PlaylistPage()
+def library_page():
+    from spotify_project.pages.library_page import LibraryPage
+    return LibraryPage()
 
 
 @pytest.fixture
 def credentials():
     return {
         "username": SPOTIFY_USERNAME,
-        "password": SPOTIFY_PASSWORD
+        "password": SPOTIFY_PASSWORD,
+        "expected_name": "Alisha"
     }
