@@ -4,7 +4,7 @@ from spotify_project.pages.login_page import LoginPage
 from spotify_project.pages.navigation_page import NavigationPage
 from selene import browser, be, have
 
-ERROR_NOT_LINKED = "Адрес электронной почты или имя пользователя не связаны с аккаунтом Spotify"
+ERROR_NOT_LINKED = "Адрес электронной почты или имя пользователя не связаны с аккаунтом Spotify" or "Адрес электронной почты или имя пользователя не привязаны к аккаунту Spotify"
 ERROR_INVALID_CREDS = "Неправильное имя пользователя или пароль."
 ERROR_REQUIRED_FIELD = "Введите имя пользователя или адрес электронной почты из аккаунта Spotify."
 
@@ -33,24 +33,24 @@ def test_invalid_password(credentials, login_page: LoginPage, navigation_page: N
     valid_username = credentials["username"]
     wrong_password = "wrong_password_123"
 
-    with allure.step("1. Переход на страницу авторизации"):
+    with allure.step("Переход на страницу авторизации"):
         navigation_page.navigate_to_login()
-    with allure.step("2. Выполняем полную авторизацию с НЕВЕРНЫМ паролем"):
+    with allure.step("Выполняем полную авторизацию с НЕВЕРНЫМ паролем"):
         login_page.login(valid_username, wrong_password)
-    with allure.step("3. Проверить отображение системной ошибки"):
-        login_page.should_see_error_message_password(ERROR_INVALID_CREDS)
+    with allure.step("Проверить отображение системной ошибки"):
+        login_page.should_see_error_message(ERROR_INVALID_CREDS)
 
 @allure.feature("Авторизация")
 @allure.story("Негативная авторизация: пустые поля")
 @allure.tag("negative", "UI_validation")
 @allure.severity(allure.severity_level.MINOR)
 def test_login_with_empty_fields(login_page: LoginPage, navigation_page: NavigationPage):
-    with allure.step("1. Переход на страницу авторизации"):
+    with allure.step("Переход на страницу авторизации"):
         navigation_page.navigate_to_login()
-    with allure.step("2. Нажать кнопку 'Continue', оставив поле пустым"):
+    with allure.step("Нажать кнопку 'Continue', оставив поле пустым"):
         login_page.attempt_to_continue_with_empty_username()
-    with allure.step("3. Проверить отображение сообщений о необходимости заполнения"):
-        login_page.should_see_field_required_error(ERROR_REQUIRED_FIELD)
+    with allure.step("Проверить отображение сообщений о необходимости заполнения"):
+        login_page.should_see_error_message(ERROR_REQUIRED_FIELD)
 
 
 @allure.feature("Авторизация")
@@ -62,11 +62,9 @@ def test_login_with_empty_fields(login_page: LoginPage, navigation_page: Navigat
 )
 def test_invalid_login_with_parameters(username, password, expected_error, login_page: LoginPage,
                                        navigation_page: NavigationPage):
-    """Тест проверяет ошибки валидации/аккаунта, которые срабатывают на первом экране."""
-
-    with allure.step(f"1. Переход на страницу авторизации"):
+    with allure.step("Переход на страницу авторизации"):
         navigation_page.navigate_to_login()
-    with allure.step(f"2. Ввести логин и нажать 'Продолжить': {username}"):
+    with allure.step("Ввести логин и нажать 'Продолжить': {username}"):
         login_page.enter_username_and_continue(username)
-    with allure.step(f"3. Проверить отображение сообщения об ошибке: '{expected_error}'"):
-        login_page.should_see_error_message_email(expected_error)
+    with allure.step("Проверить отображение сообщения об ошибке: '{expected_error}'"):
+        login_page.should_see_error_message(expected_error)

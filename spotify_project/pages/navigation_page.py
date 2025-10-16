@@ -5,8 +5,6 @@ import allure
 
 
 class NavigationPage:
-    """Содержит общие элементы навигации (шапка, боковая панель)."""
-
     LOGIN_BUTTON_NAV: Element = browser.element("[data-testid='login-button']")
 
     @allure.step("Переход на страницу авторизации через кнопку в навбаре")
