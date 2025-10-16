@@ -38,7 +38,7 @@ class LibraryPage:
 
     @allure.step("Ввод нового имени плейлиста: '{new_name}'")
     def set_playlist_name(self, new_name: str):
-        self.PLAYLIST_TITLE_INPUT.should(be.visible).clear().type(new_name)
+        self.PLAYLIST_TITLE_INPUT.should(be.visible).clear().type(new_name).press_tab()
         return self
 
     @allure.step("Выбор обложки для плейлиста")
@@ -48,7 +48,8 @@ class LibraryPage:
 
     @allure.step("Сохранение изменений в деталях плейлиста")
     def save_playlist_details(self):
-        self.PLAYLIST_SAVE_BUTTON.with_(timeout=4).should(be.clickable).click(js=True)
+        self.PLAYLIST_SAVE_BUTTON.with_(timeout=4).should(be.clickable)
+        browser.driver.execute_script("arguments[0].click();", self.PLAYLIST_SAVE_BUTTON.locate())
         return self
 
     @allure.step("Добавление песни '{song_name}' в плейлист")

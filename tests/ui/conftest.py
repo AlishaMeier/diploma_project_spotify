@@ -28,7 +28,6 @@ def pytest_runtest_makereport(item, call):
     return rep
 
 
-# --- ФИКСТУРА БРАУЗЕРА (ОСНОВА: ЛОКАЛЬНЫЙ РЕЖИМ) ---
 @pytest.fixture(scope="function", autouse=True)
 def setup_browser():
     driver = webdriver.Chrome()
