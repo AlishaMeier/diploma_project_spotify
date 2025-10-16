@@ -1,13 +1,11 @@
 import pytest
 from selenium import webdriver
-from selene import browser
+from selene import browser, be
 from selene.support.shared import browser
 from dotenv import load_dotenv
 import os
-import allure
+
 # from spotify_project.utils import attach
-
-
 
 load_dotenv()
 
@@ -17,8 +15,8 @@ SPOTIFY_PASSWORD = os.getenv('SPOTIFY_PASSWORD')
 # Настройки браузера
 browser.config.base_url = "https://open.spotify.com/"
 browser.config.timeout = 10.0
-browser.config.window_width = 1300
-browser.config.window_height = 760
+browser.config.window_width = 1728
+browser.config.window_height = 1117
 
 
 
@@ -38,26 +36,35 @@ def setup_browser():
 
     browser.open('')
 
+    cookie_accept_button = browser.element('#onetrust-accept-btn-handler')
+    if cookie_accept_button.with_(timeout=2).wait_until(be.visible):
+        cookie_accept_button.click()
+
     yield
 
     driver.quit()
 
 @pytest.fixture
 def login_page():
-    from spotify_project.pages.login_page import LoginPage
+    from spotify_project.pages.web.login_page import LoginPage
     return LoginPage()
 
 
 @pytest.fixture
 def navigation_page():
-    from spotify_project.pages.navigation_page import NavigationPage
+    from spotify_project.pages.web.navigation_page import NavigationPage
     return NavigationPage()
 
 
 @pytest.fixture
 def library_page():
-    from spotify_project.pages.library_page import LibraryPage
+    from spotify_project.pages.web.library_page import LibraryPage
     return LibraryPage()
+
+@pytest.fixture
+def search_page():
+    from spotify_project.pages.web.search_page import SearchPage
+    return SearchPage()
 
 
 @pytest.fixture

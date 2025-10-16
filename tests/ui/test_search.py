@@ -1,44 +1,49 @@
 import pytest
 import allure
-from spotify_project.pages.search_page import SearchPage
+from spotify_project.pages.web.search_page import SearchPage
 
 INVALID_SEARCH_DATA = [
-    ("asdlfjkglhjklasd", "Ничего не найдено"),
-    ("111222333444", "Возможно, вы ввели неправильный запрос"),
+    (" ", "По запросу « » ничего не найдено"),
 ]
 
 @allure.epic("UI-тестирование")
 @allure.feature("Поиск")
 class TestSearchFunctionality:
 
-    @allure.story("Поиск песни по названию и проверка первого результата")
-    @allure.tag("positive", "high_priority")
+    @allure.story("Визуальная проверка карточки трека в поиске")
+    @allure.label("owner", "AlishaMeier")
+    @allure.tag("positive", "visual", "smoke")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_successful_song_search(self, search_page: SearchPage):
-        song_name = "Dope"  # Используем уникальное название
+    def test_search_result_has_visual_details(self, search_page: SearchPage):
+        song_name = "Dope"
+        expected_artist = "BTS"
 
-        with allure.step("1. Переход на страницу поиска"):
-            search_page.open_search_page()
+        with allure.step(f"1. Выполнить поиск песни '{song_name}'"):
+            search_page.search_from_main_page(song_name)
+        with allure.step("2. Проверить, что у топ-результата есть обложка и имя исполнителя"):
+            search_page.should_have_top_result_details(expected_artist)
 
-        with allure.step(f"2. Ввод поискового запроса: {song_name}"):
-            search_page.type_search_query(song_name)
 
-        with allure.step("3. Проверка, что секции результатов отображаются"):
-            search_page.should_show_results()
+    @allure.story("Поиск с опечаткой")
+    @allure.label("owner", "AlishaMeier")
+    @allure.tag("positive", "regression")
+    @allure.severity(allure.severity_level.NORMAL)
+    def test_search_with_typo_shows_corrected_results(self, search_page: SearchPage):
+        query_with_typo = "Nirvna"
+        corrected_artist = "Nirvana"
 
-        with allure.step("4. Проверка, что первый результат содержит название песни"):
-            search_page.should_have_first_result_with_text(song_name)
+        with allure.step("Выполнить поиск с опечаткой '{query_with_typo}'"):
+            search_page.search_from_main_page(query_with_typo)
+        with allure.step("Проверить, что в топ-результате отображается исправленное название"):
+            search_page.should_have_top_result_with_title(corrected_artist)
 
     @allure.story("Негативный поиск: не найдено результатов")
+    @allure.label("owner", "AlishaMeier")
     @allure.tag("negative", "parametrize")
     @allure.severity(allure.severity_level.MINOR)
     @pytest.mark.parametrize("query, expected_message", INVALID_SEARCH_DATA)
     def test_search_no_results_found(self, query, expected_message, search_page: SearchPage):
-        with allure.step("1. Переход на страницу поиска"):
-            search_page.open_search_page()
-
-        with allure.step(f"2. Ввод невалидного запроса: {query}"):
-            search_page.type_search_query(query)
-
-        with allure.step("3. Проверка, что отображается сообщение об отсутствии результатов"):
-            search_page.should_show_no_results_message(expected_message)
+        with allure.step("Ввод невалидного запроса: '{query}'"):
+            search_page.search_from_main_page(query)
+        with allure.step("Проверка, что отображается сообщение об отсутствии результатов"):
+            search_page.should_see_message(expected_message)

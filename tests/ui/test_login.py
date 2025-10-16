@@ -1,8 +1,7 @@
 import pytest
 import allure
-from spotify_project.pages.login_page import LoginPage
-from spotify_project.pages.navigation_page import NavigationPage
-from selene import browser, be, have
+from spotify_project.pages.web.login_page import LoginPage
+from spotify_project.pages.web.navigation_page import NavigationPage
 
 ERROR_NOT_LINKED = "Адрес электронной почты или имя пользователя не связаны с аккаунтом Spotify" or "Адрес электронной почты или имя пользователя не привязаны к аккаунту Spotify"
 ERROR_INVALID_CREDS = "Неправильное имя пользователя или пароль."
@@ -14,19 +13,21 @@ INVALID_LOGIN_DATA = [
 
 @allure.feature("Авторизация")
 @allure.story("Тест на успешную авторизацию")
+@allure.label("owner", "AlishaMeier")
 @allure.tag("positive", "critical")
 @allure.severity(allure.severity_level.CRITICAL)
 def test_login(credentials, login_page: LoginPage, navigation_page: NavigationPage):
-    with allure.step("1. Переход на страницу авторизации с главной"):
+    with allure.step("Переход на страницу авторизации с главной"):
         navigation_page.navigate_to_login()
-    with allure.step("2. Выполнение полной авторизации"):
+    with allure.step("Выполнение полной авторизации"):
         login_page.login(credentials["username"], credentials["password"])
-    with allure.step("3. Проверка успешного входа"):
+    with allure.step("Проверка успешного входа"):
         login_page.should_be_logged_in()
 
 
 @allure.feature("Авторизация")
 @allure.story("Негативная авторизация: неверный пароль")
+@allure.label("owner", "AlishaMeier")
 @allure.tag("negative", "login_creds")
 @allure.severity(allure.severity_level.NORMAL)
 def test_invalid_password(credentials, login_page: LoginPage, navigation_page: NavigationPage):
@@ -42,6 +43,7 @@ def test_invalid_password(credentials, login_page: LoginPage, navigation_page: N
 
 @allure.feature("Авторизация")
 @allure.story("Негативная авторизация: пустые поля")
+@allure.label("owner", "AlishaMeier")
 @allure.tag("negative", "UI_validation")
 @allure.severity(allure.severity_level.MINOR)
 def test_login_with_empty_fields(login_page: LoginPage, navigation_page: NavigationPage):
@@ -55,6 +57,7 @@ def test_login_with_empty_fields(login_page: LoginPage, navigation_page: Navigat
 
 @allure.feature("Авторизация")
 @allure.story("Негативная авторизация: невалидные данные")
+@allure.label("owner", "AlishaMeier")
 @allure.tag("negative", "UI_validation")
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.parametrize(

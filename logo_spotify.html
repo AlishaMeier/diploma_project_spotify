@@ -1,0 +1,30 @@
+<div class="spotify-logo"></div>
+
+<style>
+body {
+  background: transparent;
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  margin: 0;
+}
+
+.spotify-logo {
+  width: 100px;
+  height: 100px;
+  background: url('https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg') no-repeat center/contain;
+  position: absolute;
+  bottom: 50px;
+  animation: roll 5s linear infinite;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+
+@keyframes roll {
+  0% {
+    transform: translateX(-120px) rotate(0deg);
+  }
+  100% {
+    transform: translateX(100vw) rotate(360deg);
+  }
+}
+</style>
