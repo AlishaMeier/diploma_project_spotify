@@ -67,7 +67,7 @@ Spotify Automation Testing Project — дипломный проект, напр
     * В настройках приложения (`Settings`) добавьте `https://example.com/callback` в поле **Redirect URIs** и сохраните изменения.
 
 2.  **Сформируйте и перейдите по ссылке для авторизации**:
-    * Соберите URL, подставив ваш `client_id` и необходимые `scopes`. [Пример ссылки со всеми нужными правами]([https://www.google.com/search?q=https://api.spotify.com/v14](https://accounts.spotify.com/authorize?response_type=code&client_id=19889471979142c990ed44cbc9982d57&scope=playlist-modify-public%20playlist-modify-private%20user-read-private%20user-follow-modify%20user-library-modify%20user-follow-modify%20user-read-email&redirect_uri=https://aboba:33/callback)).
+    * Соберите URL, подставив ваш `client_id` и необходимые `scopes`. Пример ссылки со всеми нужными правами – [https://www.google.com/search?q=https://api.spotify.com/v14](https://accounts.spotify.com/authorize?response_type=code&client_id=19889471979142c990ed44cbc9982d57&scope=playlist-modify-public%20playlist-modify-private%20user-read-private%20user-follow-modify%20user-library-modify%20user-follow-modify%20user-read-email&redirect_uri=https://YOUR_CALLBACK
     * Перейдите по ссылке, войдите в Spotify и разрешите доступ.
 
 3.  **Обменяйте `code` на `access_token`**:
