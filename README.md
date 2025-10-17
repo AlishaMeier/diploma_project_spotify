@@ -1,55 +1,5 @@
 <p align="center">
-
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <!-- Градиенты -->
-    <linearGradient id="mainTextGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1DB954" />
-      <stop offset="100%" stop-color="#FFFFFF" />
-    </linearGradient>
-
-    <linearGradient id="subTextGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#8A2BE2" />
-      <stop offset="100%" stop-color="#FFD700" />
-    </linearGradient>
-
-    <!-- Анимация свечения -->
-    <style>
-      @keyframes pulse {
-        0% { filter: drop-shadow(0 0 6px #1DB954) drop-shadow(0 0 12px #1DB954); }
-        50% { filter: drop-shadow(0 0 18px #1DB954) drop-shadow(0 0 32px #1DB954); transform: scale(1.03); }
-        100% { filter: drop-shadow(0 0 6px #1DB954) drop-shadow(0 0 12px #1DB954); }
-      }
-      .glow {
-        animation: pulse 3s ease-in-out infinite;
-        transform-origin: center;
-      }
-    </style>
-  </defs>
-
-  <!-- Анимированный логотип Spotify -->
-  <g transform="translate(410,35) scale(1.0)" class="glow">
-    <circle cx="40" cy="40" r="40" fill="#1DB954" />
-    <path fill="#000" d="M58.4 57.5a2.8 2.8 0 0 1-3.8.9c-10.5-6.4-26.6-7-36.2-3.9a2.8 2.8 0 1 1-1.7-5.3c11-3.6 28.8-3 40.5 4.2a2.8 2.8 0 0 1 1.2 4.1zm4.8-10.6a3.4 3.4 0 0 1-4.5 1.1c-12-7.2-30.3-9.3-44.6-5.1a3.4 3.4 0 1 1-1.9-6.6c15.8-4.6 35.9-2.3 49.5 5.8a3.4 3.4 0 0 1 1.5 4.8zm.4-11.3C49.7 27.6 27.5 26.9 15 30.6a4 4 0 0 1-2.3-7.7c14-4.1 38.2-3.3 53.8 5.8a4 4 0 1 1-3.9 7z"/>
-  </g>
-
-  <!-- Основной текст -->
-  <text x="50%" y="180" text-anchor="middle"
-        font-family="Segoe UI, Roboto, sans-serif"
-        font-size="44" font-weight="700"
-        fill="url(#mainTextGradient)">
-    🎧 Spotify Automation Testing Project
-  </text>
-
-  <!-- Подпись -->
-  <text x="50%" y="235" text-anchor="middle"
-        font-family="Segoe UI, Roboto, sans-serif"
-        font-size="25" font-weight="500"
-        fill="url(#subTextGradient)">
-    UI • API • Mobile
-  </text>
-</svg>
-
+  <img src=".assets/img/spotify_automation_project.svg" width="80%" alt="Spotify Automation Testing Project"/>
 </p>
 
 Скоро здесь будет кое-что интересное, а пока так ^^
