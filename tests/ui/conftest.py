@@ -23,15 +23,13 @@ browser.config.window_height = 1117
 def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
-    # Добавить эту часть:
     if rep.when == "call" and rep.failed:
         try:
-            attach.add_screenshot(browser)
-            attach.add_logs(browser)
-            attach.add_html(browser)
+            attach_web.add_screenshot(browser)
+            attach_web.add_logs(browser)
+            attach_web.add_html(browser)
         except Exception as e:
             print(f"Failed to attach Allure report: {e}")
-    return rep
 
 
 @pytest.fixture(scope="function", autouse=True)
