@@ -1,6 +1,6 @@
 import allure
 import requests
-from spotify_project.helpers.api_helpers import UserProfile
+from spotify_project.schemas.user import UserProfile
 
 @allure.feature("API: Профиль пользователя")
 @allure.story("Получение данных текущего пользователя")

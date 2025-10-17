@@ -1,6 +1,6 @@
-
 from pydantic import BaseModel, Field
 from typing import Optional
+from pydantic import BaseModel
 
 
 class PlaylistOwner(BaseModel):
@@ -31,3 +31,6 @@ class CreatedPlaylistResponse(BaseModel):
     name: str
     description: Optional[str]
     public: bool
+
+class AddTrackResponse(BaseModel):
+    snapshot_id: str

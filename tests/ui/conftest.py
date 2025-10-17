@@ -4,8 +4,7 @@ from selene import browser, be
 from selene.support.shared import browser
 from dotenv import load_dotenv
 import os
-
-# from spotify_project.utils import attach
+from spotify_project.utils import attach_web
 
 load_dotenv()
 
@@ -24,7 +23,14 @@ browser.config.window_height = 1117
 def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
-    setattr(item, "rep_" + rep.when, rep)
+    # Добавить эту часть:
+    if rep.when == "call" and rep.failed:
+        try:
+            attach.add_screenshot(browser)
+            attach.add_logs(browser)
+            attach.add_html(browser)
+        except Exception as e:
+            print(f"Failed to attach Allure report: {e}")
     return rep
 
 
