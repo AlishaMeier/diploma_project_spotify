@@ -35,7 +35,7 @@ def setup_browser():
 
     browser.open('')
 
-    cookie_accept_button = browser.element('#onetrust-accept-btn-handler')
+    cookie_accept_button = browser.element('#onetrust-reject-all-handler')
     if cookie_accept_button.with_(timeout=2).wait_until(be.visible):
         cookie_accept_button.click()
 

@@ -3,6 +3,9 @@ from selene import browser, have, be
 import allure
 from selene.core.entity import Element
 from selene.core import query
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class LibraryPage:
@@ -13,7 +16,8 @@ class LibraryPage:
     PLAYLIST_SAVE_BUTTON: Element = browser.element('[data-testid="playlist-edit-details-save-button"]')
     PLAYLIST_IMAGE_INPUT: Element = browser.element('input[type="file"]')
     SEARCH_SONG_INPUT_ON_PLAYLIST_PAGE: Element = browser.element('[placeholder="Поиск треков и выпусков"]')
-    ADD_SONG_BUTTON: Element = browser.element('[data-testid="add-button"]')
+    SONG_SEARCH_RESULTS_CONTAINER: Element = browser.element('[data-testid="playlist-inline-curation-results"]')
+    ADD_SONG_BUTTON: Element = SONG_SEARCH_RESULTS_CONTAINER.element('[data-testid="add-button"]')
     CONTEXT_MENU_DELETE_OPTION: Element = browser.element('//span[text()="Удалить"]')
     CONFIRM_DELETE_BUTTON: Element = browser.element('//button[text()="Удалить"]').with_(be.visible)
 
@@ -55,6 +59,9 @@ class LibraryPage:
     @allure.step("Добавление песни '{song_name}' в плейлист")
     def add_song_to_playlist(self, song_name: str):
         self.SEARCH_SONG_INPUT_ON_PLAYLIST_PAGE.should(be.visible).type(song_name)
+        # ИСПРАВЛЕНИЕ: Ждем появления контейнера с результатами
+        self.SONG_SEARCH_RESULTS_CONTAINER.should(be.visible)
+        # Теперь кликаем по кнопке, которая гарантированно находится внутри этого контейнера
         self.ADD_SONG_BUTTON.should(be.visible).click()
         return self
 
