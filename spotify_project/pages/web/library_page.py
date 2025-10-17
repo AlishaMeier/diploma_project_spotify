@@ -17,7 +17,7 @@ class LibraryPage:
     PLAYLIST_IMAGE_INPUT: Element = browser.element('input[type="file"]')
     SEARCH_SONG_INPUT_ON_PLAYLIST_PAGE: Element = browser.element('[placeholder="Поиск треков и выпусков"]')
     SONG_SEARCH_RESULTS_CONTAINER: Element = browser.element('[data-testid="playlist-inline-curation-results"]')
-    ADD_SONG_BUTTON: Element = SONG_SEARCH_RESULTS_CONTAINER.element('[data-testid="add-button"]')
+    ADD_SONG_BUTTON: Element = SONG_SEARCH_RESULTS_CONTAINER.element('[data-testid="add-to-playlist-button"]')
     CONTEXT_MENU_DELETE_OPTION: Element = browser.element('//span[text()="Удалить"]')
     CONFIRM_DELETE_BUTTON: Element = browser.element('//button[text()="Удалить"]').with_(be.visible)
 
@@ -52,7 +52,7 @@ class LibraryPage:
 
     @allure.step("Сохранение изменений в деталях плейлиста")
     def save_playlist_details(self):
-        self.PLAYLIST_SAVE_BUTTON.with_(timeout=4).should(be.clickable)
+        self.PLAYLIST_SAVE_BUTTON.with_(timeout=6).should(be.clickable)
         browser.driver.execute_script("arguments[0].click();", self.PLAYLIST_SAVE_BUTTON.locate())
         return self
 

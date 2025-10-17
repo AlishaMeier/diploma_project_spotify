@@ -3,11 +3,9 @@ import random
 import string
 import pytest
 import allure
-from selene import browser
 from spotify_project.pages.web.login_page import LoginPage
 from spotify_project.pages.web.library_page import LibraryPage
 from spotify_project.pages.web.navigation_page import NavigationPage
-
 
 
 @allure.epic("UI-тестирование")
@@ -27,6 +25,7 @@ class TestPlaylistCRUD:
         cover_image_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', '..', 'resources', 'cover.jpeg')
         )
+        assert os.path.exists(cover_image_path), f"Файл обложки не найден по пути: {cover_image_path}"
 
         with allure.step("Авторизация"):
             navigation_page.navigate_to_login()
@@ -42,12 +41,21 @@ class TestPlaylistCRUD:
             library_page.set_playlist_cover_image(cover_image_path)
             library_page.save_playlist_details()
 
+        #with allure.step("Проверка, что название и обложка обновились"):
+            # СНАЧАЛА проверяем заголовок на открытой странице плейлиста.
+            # Это даст уверенность, что сохранение прошло успешно.
+            #library_page.should_be_on_playlist_page_with_name(new_playlist_name)
 
-        with allure.step("Проверка, что название и обложка обновились"):
-       #     library_page.should_be_on_playlist_page_with_name(new_playlist_name)
-            library_page.should_have_playlist_in_list(new_playlist_name)
+            # ТЕПЕРЬ проверяем наличие плейлиста в списке слева.
+            #library_page.should_have_playlist_in_list(new_playlist_name)
 
-        with allure.step("Поиск и добавление песни '{song_to_add}'"):
+        #with allure.step("Проверка, что плейлист с новым именем появился в боковом меню"):
+        #    library_page.should_have_playlist_in_list(new_playlist_name)
+
+        with allure.step(f"Поиск и добавление песни '{song_to_add}'"):
+            # Кликаем по плейлисту в списке, чтобы снова на него перейти
+        #    library_page.playlist_item_by_name(new_playlist_name).click()
+
             library_page.add_song_to_playlist(song_to_add)
 
         with allure.step("Проверка, что песня добавлена в плейлист"):

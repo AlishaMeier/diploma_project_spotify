@@ -19,9 +19,6 @@ class SearchPage:
 
     @allure.step("Проверка, что топ-результат имеет заголовок '{expected_title}'")
     def should_have_top_result_with_title(self, expected_title: str):
-        """
-        Проверяет, что заголовок в карточке "Top result" соответствует исправленному запросу.
-        """
         self.TOP_RESULT_TITLE.should(be.visible).should(have.text(expected_title))
         return self
 
