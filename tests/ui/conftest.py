@@ -23,6 +23,7 @@ browser.config.window_height = 1117
 def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
+
     if rep.when == "call" and rep.failed:
         try:
             attach_web.add_screenshot(browser)
