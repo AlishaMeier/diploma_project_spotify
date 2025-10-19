@@ -9,7 +9,6 @@ class NavigationPage:
 
     @allure.step("Переход на страницу авторизации через кнопку в навбаре")
     def navigate_to_login(self):
-        """Кликает на кнопку Log In в шапке."""
         with allure.step("Клик по кнопке 'Войти"):
             self.LOGIN_BUTTON_NAV.should(be.visible).click()
         return self
