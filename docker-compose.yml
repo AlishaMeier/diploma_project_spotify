@@ -18,14 +18,13 @@ services:
     image: aerokube/selenoid-ui:latest-release
     container_name: selenoid-ui
     platform: linux/amd64
-    # --- ИСПРАВЛЕНИЕ СИНТАКСИСА YAML ---
     networks:
       - selenoid-net
-    depends_on:  # <-- Вернули на уровень сервиса selenoid-ui
+    depends_on:
       - selenoid
-    ports:       # <-- Вернули на уровень сервиса selenoid-ui
+    ports:
       - "8080:8080"
-    command: [ "--selenoid-uri", "http://selenoid:4444" ] # <-- Вернули на уровень сервиса selenoid-ui
+    command: [ "--selenoid-uri", "http://selenoid:4444" ]
 
 networks:
   selenoid-net:
