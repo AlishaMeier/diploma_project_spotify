@@ -17,7 +17,6 @@ SPOTIFY_USERNAME_ALT = os.getenv('SPOTIFY_USERNAME_ALT')
 SPOTIFY_PASSWORD_ALT = os.getenv('SPOTIFY_PASSWORD_ALT')
 SPOTIFY_EXPECTED_NAME_ALT = os.getenv('SPOTIFY_EXPECTED_NAME_ALT', 'Alisha')
 
-# --- Логика чередования ---
 _credentials_list = []
 # Добавляем основной аккаунт, если он есть
 if SPOTIFY_USERNAME and SPOTIFY_PASSWORD:
@@ -34,7 +33,6 @@ if SPOTIFY_USERNAME_ALT and SPOTIFY_PASSWORD_ALT:
         "expected_name": SPOTIFY_EXPECTED_NAME_ALT # Используем имя из .env
     })
 
-# Создаем "циклический итератор", если есть хотя бы один аккаунт
 _credential_cycler = itertools.cycle(_credentials_list) if _credentials_list else None
 
 
