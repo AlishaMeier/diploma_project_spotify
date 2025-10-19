@@ -2,6 +2,7 @@ import pytest
 import allure
 from spotify_project.pages.web.login_page import LoginPage
 from spotify_project.pages.web.navigation_page import NavigationPage
+from selene import browser
 
 ERROR_NOT_LINKED = "Адрес электронной почты или имя пользователя не связаны с аккаунтом Spotify" or "Адрес электронной почты или имя пользователя не привязаны к аккаунту Spotify"
 ERROR_INVALID_CREDS = "Неправильное имя пользователя или пароль."
@@ -19,6 +20,8 @@ INVALID_LOGIN_DATA = [
 def test_login(credentials, login_page: LoginPage, navigation_page: NavigationPage):
     with allure.step("Переход на страницу авторизации с главной"):
         navigation_page.navigate_to_login()
+        current_url = browser.driver.current_url
+        print(f"DEBUG: Current URL after navigate_to_login: {current_url}")
 
     with allure.step("Выполнение полной авторизации"):
         login_page.login(credentials["username"], credentials["password"])
@@ -32,8 +35,8 @@ def test_login(credentials, login_page: LoginPage, navigation_page: NavigationPa
 @allure.label("owner", "AlishaMeier")
 @allure.tag("negative", "login_creds")
 @allure.severity(allure.severity_level.NORMAL)
-def test_invalid_password(credentials, login_page: LoginPage, navigation_page: NavigationPage):
-    valid_username = credentials["username"]
+def test_invalid_password(login_page: LoginPage, navigation_page: NavigationPage):
+    valid_username = "valid@spotify.com"
     wrong_password = "wrong_password_123"
 
     with allure.step("Переход на страницу авторизации"):

@@ -5,11 +5,38 @@ from selene.support.shared import browser
 from dotenv import load_dotenv
 import os
 from spotify_project.utils import attach_web
+import itertools
 
 load_dotenv()
 
 SPOTIFY_USERNAME = os.getenv('SPOTIFY_USERNAME')
 SPOTIFY_PASSWORD = os.getenv('SPOTIFY_PASSWORD')
+SPOTIFY_EXPECTED_NAME = os.getenv('SPOTIFY_EXPECTED_NAME', 'Alisha')
+
+SPOTIFY_USERNAME_ALT = os.getenv('SPOTIFY_USERNAME_ALT')
+SPOTIFY_PASSWORD_ALT = os.getenv('SPOTIFY_PASSWORD_ALT')
+SPOTIFY_EXPECTED_NAME_ALT = os.getenv('SPOTIFY_EXPECTED_NAME_ALT', 'Alisha')
+
+# --- Логика чередования ---
+_credentials_list = []
+# Добавляем основной аккаунт, если он есть
+if SPOTIFY_USERNAME and SPOTIFY_PASSWORD:
+    _credentials_list.append({
+        "username": SPOTIFY_USERNAME,
+        "password": SPOTIFY_PASSWORD,
+        "expected_name": SPOTIFY_EXPECTED_NAME # Используем имя из .env
+    })
+# Добавляем альтернативный аккаунт, если он есть
+if SPOTIFY_USERNAME_ALT and SPOTIFY_PASSWORD_ALT:
+     _credentials_list.append({
+        "username": SPOTIFY_USERNAME_ALT,
+        "password": SPOTIFY_PASSWORD_ALT,
+        "expected_name": SPOTIFY_EXPECTED_NAME_ALT # Используем имя из .env
+    })
+
+# Создаем "циклический итератор", если есть хотя бы один аккаунт
+_credential_cycler = itertools.cycle(_credentials_list) if _credentials_list else None
+
 
 # Настройки браузера
 browser.config.base_url = "https://open.spotify.com/"
@@ -61,11 +88,6 @@ def navigation_page():
 
 
 @pytest.fixture
-def library_page():
-    from spotify_project.pages.web.library_page import LibraryPage
-    return LibraryPage()
-
-@pytest.fixture
 def search_page():
     from spotify_project.pages.web.search_page import SearchPage
     return SearchPage()
@@ -73,8 +95,11 @@ def search_page():
 
 @pytest.fixture
 def credentials():
-    return {
-        "username": SPOTIFY_USERNAME,
-        "password": SPOTIFY_PASSWORD,
-        "expected_name": "Alisha"
-    }
+
+    if not _credential_cycler:
+        pytest.fail("Не найдены валидные учетные данные Spotify (USERNAME, PASSWORD) в .env файле.")
+
+    # Получаем вторые креды
+    creds = next(_credential_cycler)
+    print(f"\nDEBUG: Используются учетные данные для пользователя: {creds['username']}")
+    return creds
