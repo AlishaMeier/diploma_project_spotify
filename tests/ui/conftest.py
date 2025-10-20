@@ -1,12 +1,11 @@
 import pytest
-from selenium import webdriver
-from selene import browser, be
-from selene.support.shared import browser
-from dotenv import load_dotenv
 import os
-from spotify_project.utils import attach_web
 import itertools
+from dotenv import load_dotenv
+from selene import browser, be
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from spotify_project.utils import attach_web
 
 load_dotenv()
 
@@ -19,79 +18,71 @@ SPOTIFY_PASSWORD_ALT = os.getenv('SPOTIFY_PASSWORD_ALT')
 SPOTIFY_EXPECTED_NAME_ALT = os.getenv('SPOTIFY_EXPECTED_NAME_ALT', 'Alisha')
 
 _credentials_list = []
-# Добавляем основной аккаунт, если он есть
 if SPOTIFY_USERNAME and SPOTIFY_PASSWORD:
     _credentials_list.append({
         "username": SPOTIFY_USERNAME,
         "password": SPOTIFY_PASSWORD,
-        "expected_name": SPOTIFY_EXPECTED_NAME # Используем имя из .env
+        "expected_name": SPOTIFY_EXPECTED_NAME
     })
-# Добавляем альтернативный аккаунт, если он есть
 if SPOTIFY_USERNAME_ALT and SPOTIFY_PASSWORD_ALT:
-     _credentials_list.append({
+    _credentials_list.append({
         "username": SPOTIFY_USERNAME_ALT,
         "password": SPOTIFY_PASSWORD_ALT,
-        "expected_name": SPOTIFY_EXPECTED_NAME_ALT # Используем имя из .env
+        "expected_name": SPOTIFY_EXPECTED_NAME_ALT
     })
 
 _credential_cycler = itertools.cycle(_credentials_list) if _credentials_list else None
 
-
-# Настройки браузера
 browser.config.base_url = "https://open.spotify.com/"
 browser.config.timeout = 10.0
 browser.config.window_width = 1728
 browser.config.window_height = 1117
 
 
-
-@pytest.hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_makereport(item, call):
-    outcome = yield
-    rep = outcome.get_result()
-
-    if rep.when == "call" and rep.failed:
-        try:
-            attach_web.add_screenshot(browser)
-            attach_web.add_logs(browser)
-            attach_web.add_html(browser)
-            attach_web.add_video(browser)
-        except Exception as e:
-            print(f"Failed to attach Allure report: {e}")
-
-
 @pytest.fixture(scope="function", autouse=True)
 def setup_browser():
-    # 👈 3. Вся фикстура setup_browser заменена на эту
-
-    # Конфигурация опций для Selenoid
     options = Options()
-    # Используем версию 120.0, как указано в config/browsers.json
-    options.browser_version = "120.0"
 
-    # Selenoid-опции для VNC (просмотр) и записи видео
-    options.set_capability("selenoid:options", {
-        "enableVNC": True,
-        "enableVideo": True
-    })
+    capabilities = {
+        "browserName": "chrome",
+        "browserVersion": "128",   # ✅ без цифр
+        "selenoid:options": {
+            "enableVNC": True,
+            "enableVideo": True
+        }
+    }
+    options.set_capability("selenoid:options", capabilities["selenoid:options"])
+    options.set_capability("browserName", "chrome")
+    options.set_capability("browserVersion", "128")
 
-    selenoid_url = os.getenv("SELENOID_URL", "http://localhost:4444/wd/hub")
+    login = os.getenv("SELENOID_LOGIN")
+    password = os.getenv("SELENOID_PASS")
+    base_url = os.getenv("SELENOID_URL")  # https://selenoid.autotests.cloud/wd/hub
+
+    remote_url = base_url.replace(
+        "https://",
+        f"https://{login}:{password}@"
+    )
 
     driver = webdriver.Remote(
-        command_executor=selenoid_url,
+        command_executor=remote_url,
         options=options
     )
+
     browser.config.driver = driver
+    browser.open('/')
 
-    browser.open('')
-
-    cookie_accept_button = browser.element('#onetrust-reject-all-handler')
-    if cookie_accept_button.with_(timeout=2).wait_until(be.visible):
-        cookie_accept_button.click()
+    try:
+        cookie_button = browser.element('#onetrust-reject-all-handler')
+        if cookie_button.with_(timeout=2).wait_until(be.visible):
+            cookie_button.click()
+    except:
+        pass
 
     yield
 
     driver.quit()
+
 
 @pytest.fixture
 def login_page():
@@ -101,6 +92,7 @@ def login_page():
 
 @pytest.fixture
 def navigation_page():
+    # Убедись, что путь к NavigationPage правильный
     from spotify_project.pages.navigation_page import NavigationPage
     return NavigationPage()
 
@@ -113,11 +105,9 @@ def search_page():
 
 @pytest.fixture
 def credentials():
-
     if not _credential_cycler:
         pytest.fail("Не найдены валидные учетные данные Spotify (USERNAME, PASSWORD) в .env файле.")
 
-    # Получаем вторые креды
     creds = next(_credential_cycler)
-    print(f"\nDEBUG: Используются учетные данные для пользователя: {creds['username']}")
+    print(f"\nDEBUG: Используются учетные данные: {creds['username']}")
     return creds

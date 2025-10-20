@@ -1,7 +1,7 @@
-urllib3
+urllib3<2.0.0
 requests
 allure-python-commons
-selenium==4.37.0
+selenium
 pytest==8.4.2
 allure-pytest==2.15.0
 selene==2.0.0rc9
