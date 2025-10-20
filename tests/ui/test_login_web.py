@@ -1,7 +1,7 @@
 import pytest
 import allure
-from spotify_project.pages.web.login_page import LoginPage
-from spotify_project.pages.web.navigation_page import NavigationPage
+from spotify_project.pages.login_page import LoginPage
+from spotify_project.pages.navigation_page import NavigationPage
 from selene import browser
 
 ERROR_NOT_LINKED = "Адрес электронной почты или имя пользователя не связаны с аккаунтом Spotify" or "Адрес электронной почты или имя пользователя не привязаны к аккаунту Spotify"

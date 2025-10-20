@@ -1,6 +1,6 @@
 import pytest
 import allure
-from spotify_project.pages.web.search_page import SearchPage
+from spotify_project.pages.search_page import SearchPage
 from selene import be, have, browser
 
 INVALID_SEARCH_DATA = [

@@ -4,7 +4,6 @@ import json
 import logging
 from datetime import datetime
 
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -13,18 +12,24 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def api_request(base_url, endpoint, method="GET", headers=None, params=None, json_body=None):
-
+def api_request(base_url, endpoint, method="GET", headers=None, params=None, json_body=None, data=None):
     url = f"{base_url}{endpoint}"
     method = method.upper()
 
     with allure.step(f"{method} {endpoint}"):
+
+        request_body_log = {}
+        if json_body:
+            request_body_log = json_body
+        elif data:
+            request_body_log = f"<{len(data)} bytes of data (e.g., image). Truncated view: {str(data[:100])}...>"
+
         allure.attach(
             json.dumps({
                 "url": url,
                 "method": method,
                 "params": params,
-                "body": json_body,
+                "body": request_body_log,
                 "headers": headers
             }, indent=2, ensure_ascii=False),
             name="Request",
@@ -32,17 +37,25 @@ def api_request(base_url, endpoint, method="GET", headers=None, params=None, jso
         )
 
         start_time = datetime.now()
-        response = requests.request(method, url, headers=headers, params=params, json=json_body)
+
+        # Поддержка json/data
+        response = requests.request(
+            method,
+            url,
+            headers=headers,
+            params=params,
+            json=json_body,
+            data=data
+        )
+
         elapsed = (datetime.now() - start_time).total_seconds()
 
-        # консоль
         logger.info(f"{method} {url} -> {response.status_code} ({elapsed:.2f}s)")
 
-        # allure
         try:
             response_json = response.json()
-        except Exception:
-            response_json = {"raw_text": response.text}
+        except requests.exceptions.JSONDecodeError:
+            response_json = {"raw_text": response.text if response.text else "No Content"} #вдруг тело пустое
 
         allure.attach(
             json.dumps({

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 from spotify_project.utils import attach_web
 import itertools
+from selenium.webdriver.chrome.options import Options
 
 load_dotenv()
 
@@ -54,13 +55,32 @@ def pytest_runtest_makereport(item, call):
             attach_web.add_screenshot(browser)
             attach_web.add_logs(browser)
             attach_web.add_html(browser)
+            attach_web.add_video(browser)
         except Exception as e:
             print(f"Failed to attach Allure report: {e}")
 
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_browser():
-    driver = webdriver.Chrome()
+    # 👈 3. Вся фикстура setup_browser заменена на эту
+
+    # Конфигурация опций для Selenoid
+    options = Options()
+    # Используем версию 120.0, как указано в config/browsers.json
+    options.browser_version = "120.0"
+
+    # Selenoid-опции для VNC (просмотр) и записи видео
+    options.set_capability("selenoid:options", {
+        "enableVNC": True,
+        "enableVideo": True
+    })
+
+    selenoid_url = os.getenv("SELENOID_URL", "http://localhost:4444/wd/hub")
+
+    driver = webdriver.Remote(
+        command_executor=selenoid_url,
+        options=options
+    )
     browser.config.driver = driver
 
     browser.open('')
@@ -75,19 +95,19 @@ def setup_browser():
 
 @pytest.fixture
 def login_page():
-    from spotify_project.pages.web.login_page import LoginPage
+    from spotify_project.pages.login_page import LoginPage
     return LoginPage()
 
 
 @pytest.fixture
 def navigation_page():
-    from spotify_project.pages.web.navigation_page import NavigationPage
+    from spotify_project.pages.navigation_page import NavigationPage
     return NavigationPage()
 
 
 @pytest.fixture
 def search_page():
-    from spotify_project.pages.web.search_page import SearchPage
+    from spotify_project.pages.search_page import SearchPage
     return SearchPage()
 
 

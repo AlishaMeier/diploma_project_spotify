@@ -33,6 +33,21 @@ class PlaylistApi:
         endpoint = f"/playlists/{playlist_id}/followers"
         return api_request(self.base_url, endpoint, method="DELETE", headers=self.headers)
 
+    @allure.step("API: Загрузить обложку для плейлиста {playlist_id}")
+    def upload_playlist_cover(self, playlist_id: str, image_base64_bytes: bytes):  # <-- Принимаем bytes
+        endpoint = f"/playlists/{playlist_id}/images"
+
+        upload_headers = self.headers.copy()
+        upload_headers['Content-Type'] = 'image/jpeg'  # как в curl
+
+        return api_request(
+            self.base_url,
+            endpoint,
+            method="PUT",
+            headers=upload_headers,
+            data=image_base64_bytes  
+        )
+
 class LibraryApi:
     def __init__(self, base_url, headers):
         self.base_url = base_url
@@ -62,3 +77,4 @@ class LibraryApi:
     def unfollow_artist(self, artist_id: str):
         endpoint = "/me/following?type=artist"
         return api_request(self.base_url, endpoint, method="DELETE", headers=self.headers, json_body={"ids": [artist_id]})
+

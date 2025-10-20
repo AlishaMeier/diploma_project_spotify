@@ -1,5 +1,7 @@
 import allure
 from spotify_project.schemas.playlist import Playlist, AddTrackResponse
+import base64
+import os
 
 
 @allure.feature("API: Плейлисты")
@@ -70,7 +72,6 @@ def test_create_and_delete_playlist(playlist_api, user_id):
             with allure.step("Очистка: удаление плейлиста с ID {playlist_id}"):
                 delete_response = playlist_api.unfollow_playlist(playlist_id)
                 assert delete_response.status_code == 200, "Не удалось удалить плейлист при очистке"
-
 
 
 @allure.feature("API: Плейлисты")
@@ -150,3 +151,48 @@ def test_add_non_existent_track(playlist_api):
 
     with allure.step("Проверяем, что код ответа 400 (Bad Request)"):
         assert response.status_code == 400, "Ожидался код 400 при добавлении несуществующего трека"
+
+
+@allure.feature("API: Плейлисты")
+@allure.story("Работа с файлами: Загрузка обложки плейлиста")
+@allure.label("owner", "AlishaMeier")
+@allure.tag("positive", "api", "file_upload")
+@allure.severity(allure.severity_level.NORMAL)
+def test_upload_custom_playlist_cover(playlist_api, user_id):
+    playlist_id = None
+    try:
+        with allure.step("Создание временного плейлиста для теста"):
+            create_response = playlist_api.create_playlist(
+                user_id=user_id,
+                name="Playlist for Cover Upload",
+                description="Test playlist for file upload"
+            )
+            assert create_response.status_code == 201
+            playlist_id = create_response.json()["id"]
+
+        with allure.step("Чтение и кодирование нашей картинки в Base64)"):
+            image_path = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), '..', 'resources', 'cover.jpg')
+            )
+            assert os.path.exists(image_path), f"Файл не найден: {image_path}"
+
+            with open(image_path, 'rb') as image_file:
+                image_data = image_file.read()
+                image_base64_bytes = base64.b64encode(image_data)
+
+        with allure.step("Загрузка обложки в плейлист"):
+            upload_response = playlist_api.upload_playlist_cover(
+                playlist_id,
+                image_base64_bytes  # Передаем БАЙТЫ
+            )
+
+        with allure.step("Проверяем, что обложка успешно загружена (код 202)"):
+            assert upload_response.status_code == 202, \
+                "Ожидался код 202 (Accepted) при загрузке обложки. " \
+                f"Тело ответа: {upload_response.text}"
+
+    finally:
+        if playlist_id:
+            with allure.step(f"Очистка: удаление временного плейлиста"):
+                delete_response = playlist_api.unfollow_playlist(playlist_id)
+                assert delete_response.status_code == 200, "Не удалось удалить плейлист при очистке"
