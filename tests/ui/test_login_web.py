@@ -4,12 +4,13 @@ from spotify_project.pages.login_page import LoginPage
 from spotify_project.pages.navigation_page import NavigationPage
 from selene import browser
 
-ERROR_NOT_LINKED = "Адрес электронной почты или имя пользователя не связаны с аккаунтом Spotify" or "Адрес электронной почты или имя пользователя не привязаны к аккаунту Spotify"
-ERROR_INVALID_CREDS = "Неправильное имя пользователя или пароль."
-ERROR_REQUIRED_FIELD = "Введите имя пользователя или адрес электронной почты из аккаунта Spotify."
+ERROR_NOT_LINKED = "Адрес электронной почты или имя пользователя не связаны с аккаунтом Spotify" or "Адрес электронной почты или имя пользователя не привязаны к аккаунту Spotify" #or "Email or username isn’t linked to a Spotify account"
+ERROR_INVALID_CREDS = "Неправильное имя пользователя или пароль." #or "Incorrect username or password."
+ERROR_REQUIRED_FIELD = "Введите имя пользователя или адрес электронной почты из аккаунта Spotify." #or "Please enter your Spotify username or email address."
+
 
 INVALID_LOGIN_DATA = [
-    ("no_at_sign.com", "любой_пароль", ERROR_NOT_LINKED)
+    ("nwas_aasignnn@c.com", "любой_пароль", ERROR_NOT_LINKED)
 ]
 
 @allure.feature("Авторизация")
@@ -36,7 +37,7 @@ def test_login(credentials, login_page: LoginPage, navigation_page: NavigationPa
 @allure.tag("negative", "login_creds")
 @allure.severity(allure.severity_level.NORMAL)
 def test_invalid_password(login_page: LoginPage, navigation_page: NavigationPage):
-    valid_username = "valid@spotify.com"
+    valid_username = "alishazzzz@icloud.com"
     wrong_password = "wrong_password_123"
 
     with allure.step("Переход на страницу авторизации"):

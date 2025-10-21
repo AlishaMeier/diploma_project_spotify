@@ -51,7 +51,7 @@ class SearchPage:
         self.FIRST_MAIN_RESULT_SUBTITLE.should(be.visible).should(have.text(expected_subtitle))
         return self
 
-    @allure.step("Проверка, что топ-результат - это альбом с обложкой, типом 'Альбом' и исполнителем '{artist_name}'")
+    @allure.step("Проверка, что топ-результат - это альбом с обложкой, типом 'Album' и исполнителем '{artist_name}'")
     def should_have_top_result_as_album(self, artist_name: str):
         self.TOP_RESULT_CARD.should(be.visible)
         self.TOP_RESULT_COVER_ART.should(be.visible)
