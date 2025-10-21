@@ -65,7 +65,7 @@ def setup_browser():
     options.add_argument('--lang=ru')
     options.add_argument('--accept-lang=ru,ru-RU')
     options.set_capability("browserName", "chrome")
-    options.set_capability("browserVersion", "128.0")
+    #options.set_capability("browserVersion", "128.0")
     options.set_capability("selenoid:options", {
         "enableVNC": True,
         "enableVideo": True
