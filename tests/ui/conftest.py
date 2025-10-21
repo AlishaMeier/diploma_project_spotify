@@ -7,7 +7,23 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from spotify_project.utils import attach_web
 
-load_dotenv()
+
+def pytest_addoption(parser):
+    parser.addoption(
+        '--browser_version',
+        default='127.0'
+    )
+
+
+@pytest.fixture(scope='session')
+def browser_version(request):
+    return request.config.getoption('--browser_version')
+
+
+@pytest.fixture(scope="session", autouse=True)
+def load_env():
+    load_dotenv()
+
 
 SPOTIFY_USERNAME = os.getenv('SPOTIFY_USERNAME')
 SPOTIFY_PASSWORD = os.getenv('SPOTIFY_PASSWORD')
@@ -25,7 +41,7 @@ if SPOTIFY_USERNAME and SPOTIFY_PASSWORD:
         "expected_name": SPOTIFY_EXPECTED_NAME
     })
 if SPOTIFY_USERNAME_ALT and SPOTIFY_PASSWORD_ALT:
-     _credentials_list.append({
+    _credentials_list.append({
         "username": SPOTIFY_USERNAME_ALT,
         "password": SPOTIFY_PASSWORD_ALT,
         "expected_name": SPOTIFY_EXPECTED_NAME_ALT
@@ -40,36 +56,43 @@ browser.config.window_height = 1017
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup_browser():
+def setup_browser(browser_version):
+
     login = os.getenv("SELENOID_LOGIN")
     password = os.getenv("SELENOID_PASS")
-    selenoid_base_url = os.getenv("SELENOID_URL") # https://selenoid.autotests.cloud/wd/hub
+    selenoid_base_url = os.getenv("SELENOID_URL")  # https://selenoid.autotests.cloud/wd/hub
 
     if not selenoid_base_url:
         raise ValueError("Переменная SELENOID_URL не найдена в .env!")
 
     try:
         if not selenoid_base_url.startswith("https://"):
-             raise ValueError(f"SELENOID_URL должен начинаться с https://, получено: {selenoid_base_url}")
+            raise ValueError(f"SELENOID_URL должен начинаться с https://, получено: {selenoid_base_url}")
         url_parts = selenoid_base_url.split("https://")
         if len(url_parts) < 2 or not url_parts[1]:
-             raise ValueError(f"Некорректный формат SELENOID_URL после https://: {selenoid_base_url}")
+            raise ValueError(f"Некорректный формат SELENOID_URL после https://: {selenoid_base_url}")
         url_without_protocol = url_parts[1]
+
         remote_url = f"https://{login}:{password}@{url_without_protocol}"
+
     except Exception as e:
         raise ValueError(f"Ошибка при формировании URL для Selenoid: {e}")
 
-    print(f"DEBUG: Попытка подключения к Selenoid по URL: {remote_url}") # Для отладки
+    print(f"DEBUG: Попытка подключения к Selenoid по URL: {remote_url}")
+    print(f"DEBUG: Запрашиваемая версия браузера: {browser_version}")
 
     options = Options()
-    #options.add_argument('--lang=ru')
-    #options.add_argument('--accept-lang=ru,ru-RU')
-    options.set_capability("browserName", "chrome")
-    #options.set_capability("browserVersion", "128.0")
-    options.set_capability("selenoid:options", {
-        "enableVNC": True,
-        "enableVideo": True
-    })
+
+    selenoid_capabilities = {
+        "browserName": "chrome",
+        "browserVersion": browser_version,
+        "selenoid:options": {
+            "enableVNC": True,
+            "enableVideo": True
+        }
+    }
+
+    options.capabilities.update(selenoid_capabilities)
 
     driver = webdriver.Remote(
         command_executor=remote_url,
@@ -104,24 +127,27 @@ def setup_browser():
         attach_web.add_video_from_selenoid(browser)
     except Exception as e:
         print(f"Failed to attach video: {e}")
-    # -----------------------------------------------------------------
 
     browser.quit()
+
 
 @pytest.fixture
 def login_page():
     from spotify_project.pages.login_page import LoginPage
     return LoginPage()
 
+
 @pytest.fixture
 def navigation_page():
     from spotify_project.pages.navigation_page import NavigationPage
     return NavigationPage()
 
+
 @pytest.fixture
 def search_page():
     from spotify_project.pages.search_page import SearchPage
     return SearchPage()
+
 
 @pytest.fixture
 def credentials():
