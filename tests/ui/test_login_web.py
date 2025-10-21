@@ -13,6 +13,7 @@ INVALID_LOGIN_DATA = [
     ("nwas_aasignnn@c.com", "любой_пароль", ERROR_NOT_LINKED)
 ]
 
+@pytest.mark.ui
 @allure.feature("Авторизация")
 @allure.story("Тест на успешную авторизацию")
 @allure.label("owner", "AlishaMeier")
@@ -30,7 +31,7 @@ def test_login(credentials, login_page: LoginPage, navigation_page: NavigationPa
     with allure.step("Проверка успешного входа"):
         login_page.should_be_logged_in()
 
-
+@pytest.mark.ui
 @allure.feature("Авторизация")
 @allure.story("Негативная авторизация: неверный пароль")
 @allure.label("owner", "AlishaMeier")
@@ -49,6 +50,8 @@ def test_invalid_password(login_page: LoginPage, navigation_page: NavigationPage
     with allure.step("Проверить отображение системной ошибки"):
         login_page.should_see_error_message(ERROR_INVALID_CREDS)
 
+
+@pytest.mark.ui
 @allure.feature("Авторизация")
 @allure.story("Негативная авторизация: пустые поля")
 @allure.label("owner", "AlishaMeier")
@@ -65,6 +68,7 @@ def test_login_with_empty_fields(login_page: LoginPage, navigation_page: Navigat
         login_page.should_see_error_message(ERROR_REQUIRED_FIELD)
 
 
+@pytest.mark.ui
 @allure.feature("Авторизация")
 @allure.story("Негативная авторизация: невалидные данные")
 @allure.label("owner", "AlishaMeier")

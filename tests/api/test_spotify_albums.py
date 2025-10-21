@@ -1,7 +1,10 @@
 import allure
+import pytest
+
 from spotify_project.schemas.album import GetSavedAlbumsResponse
 
 
+@pytest.mark.api
 @allure.feature("API: Медиатека")
 @allure.story("Добавление, проверка и удаление альбома")
 @allure.label("owner", "AlishaMeier")
@@ -28,6 +31,8 @@ def test_album_save_check_and_remove(library_api):
             remove_response = library_api.remove_album(album_id)
             assert remove_response.status_code == 200, "Ожидался код 200 при удалении альбома"
 
+
+@pytest.mark.api
 @allure.feature("API: Медиатека")
 @allure.story("Негативный кейс: сохранение несуществующего альбома")
 @allure.label("owner", "AlishaMeier")

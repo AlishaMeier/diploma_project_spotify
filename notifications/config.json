@@ -1,0 +1,19 @@
+{
+  "base": {
+    "project": "Spotify_project",
+    "environment": "UI",
+    "comment": "✅ Here are the latest test results:",
+    "reportLink": "allure/",
+    "language": "ru",
+    "allureFolder": "allure-report",
+    "enableChart": true,
+    "enableSuitesPublishing": true,
+    "durationFormat": "HH:mm:ss.SSS",
+    "logo": "logo.png"
+  },
+  "telegram": {
+    "token": "...",
+    "chat": "...",
+    "replyTo": ""
+  }
+}

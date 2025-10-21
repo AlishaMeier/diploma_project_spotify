@@ -1,7 +1,10 @@
 import allure
+import pytest
 import requests
 from spotify_project.schemas.user import UserProfile
 
+
+@pytest.mark.api
 @allure.feature("API: Профиль пользователя")
 @allure.story("Получение данных текущего пользователя")
 @allure.label("owner", "AlishaMeier")

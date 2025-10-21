@@ -11,6 +11,7 @@ INVALID_SEARCH_DATA = [
 @allure.feature("Поиск")
 class TestSearchFunctionality:
 
+    @pytest.mark.ui
     @allure.story("Визуальная проверка карточки трека в поиске")
     @allure.label("owner", "AlishaMeier")
     @allure.tag("positive", "visual", "smoke")
@@ -25,7 +26,7 @@ class TestSearchFunctionality:
         with allure.step("2. Проверить, что у топ-результата есть обложка и имя исполнителя"):
             search_page.should_have_top_result_card_details(expected_artist)
 
-
+    @pytest.mark.ui
     @allure.story("Переход на страницу артиста из результатов поиска")
     @allure.label("owner", "AlishaMeier")
     @allure.tag("public", "regression")  # Добавим тег public
@@ -47,7 +48,7 @@ class TestSearchFunctionality:
             browser.should(have.url_containing('/artist/'))
             browser.element('[data-testid="entityTitle"] h1').should(have.text(artist_name))
 
-
+    @pytest.mark.ui
     @allure.story("Поиск альбома и проверка карточки")
     @allure.label("owner", "AlishaMeier")
     @allure.tag("public", "regression")
@@ -63,7 +64,7 @@ class TestSearchFunctionality:
             search_page.should_have_top_result_with_title(album_name)
             search_page.should_have_top_result_as_album(expected_artist)
 
-
+    @pytest.mark.ui
     @allure.story("Проверка работы фильтра Исполнитель на странице результатов поиска")
     @allure.label("owner", "AlishaMeier")
     @allure.tag("public", "regression")
@@ -83,7 +84,7 @@ class TestSearchFunctionality:
             search_page.FIRST_MAIN_RESULT_TITLE.should(be.visible).should(have.text(query))
             search_page.FIRST_MAIN_RESULT_SUBTITLE.should(be.visible).should(have.text(expected_artist_type))
 
-
+    @pytest.mark.ui
     @allure.story("Поиск с опечаткой")
     @allure.label("owner", "AlishaMeier")
     @allure.tag("positive", "regression")
@@ -98,7 +99,7 @@ class TestSearchFunctionality:
         with allure.step("Проверить, что в топ-результате отображается исправленное название"):
             search_page.should_have_top_result_with_title(corrected_artist)
 
-
+    @pytest.mark.ui
     @allure.story("Негативный поиск: не найдено результатов")
     @allure.label("owner", "AlishaMeier")
     @allure.tag("negative", "parametrize")

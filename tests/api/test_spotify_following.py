@@ -1,5 +1,8 @@
 import allure
+import pytest
 
+
+@pytest.mark.api
 @allure.feature("API: Медиатека")
 @allure.story("Подписка и отписка от артиста")
 @allure.label("owner", "AlishaMeier")
@@ -18,6 +21,8 @@ def test_follow_and_unfollow_artist(library_api):
         unfollow_response = library_api.unfollow_artist(artist_id)
         assert unfollow_response.status_code == 204, "Ожидался код 204 при отписке от артиста"
 
+
+@pytest.mark.api
 @allure.feature("API: Медиатека")
 @allure.story("Негативный кейс: подписка на несуществующего артиста")
 @allure.label("owner", "AlishaMeier")

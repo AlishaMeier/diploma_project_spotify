@@ -1,9 +1,12 @@
 import allure
+import pytest
+
 from spotify_project.schemas.playlist import Playlist, AddTrackResponse
 import base64
 import os
 
 
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Получение публичного плейлиста")
 @allure.label("owner", "AlishaMeier")
@@ -20,6 +23,8 @@ def test_get_public_playlist(playlist_api):
         assert playlist.name == expected_playlist_name
 
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Негативный кейс: поиск несуществующего плейлиста")
 @allure.label("owner", "AlishaMeier")
@@ -32,6 +37,8 @@ def test_get_non_existent_playlist(playlist_api):
         assert response.status_code == 404, f"Ожидался код 404, получен {response.status_code}"
 
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Негативный кейс: невалидный поиск")
 @allure.label("owner", "AlishaMeier")
@@ -44,6 +51,8 @@ def test_get_invalid_playlist_id(playlist_api):
         assert response.status_code == 400, f"Ожидался код 400, получен {response.status_code}"
 
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Создание и удаление плейлиста")
 @allure.label("owner", "AlishaMeier")
@@ -74,6 +83,8 @@ def test_create_and_delete_playlist(playlist_api, user_id):
                 assert delete_response.status_code == 200, "Не удалось удалить плейлист при очистке"
 
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Добавление трека в существующий плейлист")
 @allure.label("owner", "AlishaMeier")
@@ -105,6 +116,8 @@ def test_add_track_to_playlist(playlist_api, user_id):
                 playlist_api.unfollow_playlist(playlist_id)
 
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Добавление и удаление выбранного трека")
 @allure.label("owner", "AlishaMeier")
@@ -124,6 +137,8 @@ def test_add_and_delete_specific_track(playlist_api):
         delete_response = playlist_api.delete_track_from_playlist(playlist_id, track_uri)
         assert delete_response.status_code == 200, "Ожидался код 200 при удалении трека"
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Негативный кейс: создание плейлиста без имени")
 @allure.label("owner", "AlishaMeier")
@@ -139,6 +154,8 @@ def test_create_playlist_without_name(playlist_api, user_id):
         assert response.status_code == 400, "Ожидался код 400 при создании плейлиста без имени"
 
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Негативный кейс: добавление несуществующего трека")
 @allure.label("owner", "AlishaMeier")
@@ -153,6 +170,8 @@ def test_add_non_existent_track(playlist_api):
         assert response.status_code == 400, "Ожидался код 400 при добавлении несуществующего трека"
 
 
+
+@pytest.mark.api
 @allure.feature("API: Плейлисты")
 @allure.story("Работа с файлами: Загрузка обложки плейлиста")
 @allure.label("owner", "AlishaMeier")
