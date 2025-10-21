@@ -62,8 +62,8 @@ def setup_browser():
     print(f"DEBUG: Попытка подключения к Selenoid по URL: {remote_url}") # Для отладки
 
     options = Options()
-    options.add_argument('--lang=ru')
-    options.add_argument('--accept-lang=ru,ru-RU')
+    #options.add_argument('--lang=ru')
+    #options.add_argument('--accept-lang=ru,ru-RU')
     options.set_capability("browserName", "chrome")
     #options.set_capability("browserVersion", "128.0")
     options.set_capability("selenoid:options", {
