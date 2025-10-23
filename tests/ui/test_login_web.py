@@ -61,7 +61,7 @@ def test_login_with_empty_fields(login_page: LoginPage, navigation_page: Navigat
     with allure.step("Переход на страницу авторизации"):
         navigation_page.navigate_to_login()
 
-    with allure.step("Нажать кнопку 'Continue', оставив поле пустым"):
+    with allure.step("Нажать кнопку 'Продолжить', оставив поле пустым"):
         login_page.attempt_to_continue_with_empty_username()
 
     with allure.step("Проверить отображение сообщений о необходимости заполнения"):

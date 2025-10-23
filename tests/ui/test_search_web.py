@@ -96,8 +96,8 @@ class TestSearchFunctionality:
         with allure.step("Выполнить поиск с опечаткой '{query_with_typo}'"):
             search_page.search_from_main_page(query_with_typo)
 
-        with allure.step("Проверить, что в топ-результате отображается исправленное название"):
-            search_page.should_have_top_result_with_title(corrected_artist)
+        with allure.step(f"Проверить, что в топ-результате есть исполнитель '{corrected_artist}'"):
+            search_page.TOP_RESULT_ARTIST.should(be.visible).should(have.text(corrected_artist))
 
     @pytest.mark.ui
     @allure.story("Негативный поиск: не найдено результатов")

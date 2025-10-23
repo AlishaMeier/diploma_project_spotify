@@ -43,8 +43,7 @@ class LoginPage:
         self.PRIMARY_ACTION_BUTTON.should(be.visible).click()
         return self
 
-    def error_message_generic(self, text: str) -> Element:
-        return browser.element(f"//*[contains(., '{text}')]")
+
 
     @allure.step("Проверяем, что пользователь успешно залогинен")
     def should_be_logged_in(self, expected_user_name="Alisha"):
@@ -54,6 +53,7 @@ class LoginPage:
 
     @allure.step("Проверяем отображение сообщения об ошибке: '{expected_error_text}'")
     def should_see_error_message(self, expected_error_text):
-        error_element = browser.element(f"//*[contains(., '{expected_error_text}')]")
-        error_element.should(be.visible)
+        error_element = browser.element('[data-testid*="-error"] span')
+        error_element.should(be.visible).should(have.text(expected_error_text))
+
         return self
