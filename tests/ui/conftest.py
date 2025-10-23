@@ -7,6 +7,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from spotify_project.utils import attach_web
 
+browser.config.base_url = "https://spotify.com"
+browser.config.timeout = 10.0
+browser.config.window_width = 1628
+browser.config.window_height = 1017
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -30,39 +34,9 @@ def browser_language(request):
     return request.config.getoption('--language')
 
 
-@pytest.fixture(scope="session", autouse=True)
-def load_env():
-    load_dotenv()
-
-
-SPOTIFY_USERNAME = os.getenv('SPOTIFY_USERNAME')
-SPOTIFY_PASSWORD = os.getenv('SPOTIFY_PASSWORD')
-SPOTIFY_EXPECTED_NAME = os.getenv('SPOTIFY_EXPECTED_NAME', 'Alisha')
-
-SPOTIFY_USERNAME_ALT = os.getenv('SPOTIFY_USERNAME_ALT')
-SPOTIFY_PASSWORD_ALT = os.getenv('SPOTIFY_PASSWORD_ALT')
-SPOTIFY_EXPECTED_NAME_ALT = os.getenv('SPOTIFY_EXPECTED_NAME_ALT', 'Alisha')
-
-_credentials_list = []
-if SPOTIFY_USERNAME and SPOTIFY_PASSWORD:
-    _credentials_list.append({
-        "username": SPOTIFY_USERNAME,
-        "password": SPOTIFY_PASSWORD,
-        "expected_name": SPOTIFY_EXPECTED_NAME
-    })
-if SPOTIFY_USERNAME_ALT and SPOTIFY_PASSWORD_ALT:
-    _credentials_list.append({
-        "username": SPOTIFY_USERNAME_ALT,
-        "password": SPOTIFY_PASSWORD_ALT,
-        "expected_name": SPOTIFY_EXPECTED_NAME_ALT
-    })
-
-_credential_cycler = itertools.cycle(_credentials_list) if _credentials_list else None
-
-browser.config.base_url = "https://spotify.com"
-browser.config.timeout = 10.0
-browser.config.window_width = 1628
-browser.config.window_height = 1017
+#@pytest.fixture(scope="session", autouse=True)
+#def load_env():
+#    load_dotenv()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -167,9 +141,21 @@ def search_page():
 
 @pytest.fixture
 def credentials():
-    if not _credential_cycler:
-        pytest.fail("Не найдены валидные учетные данные Spotify (USERNAME, PASSWORD) в .env файле.")
+    username = os.getenv('SPOTIFY_USERNAME')
+    password = os.getenv('SPOTIFY_PASSWORD')
+    expected_name = os.getenv('SPOTIFY_EXPECTED_NAME', 'Alisha')
 
-    creds = next(_credential_cycler)
+    if not username or not password:
+        pytest.fail(
+            "ОШИБКА: Не найдены SPOTIFY_USERNAME или SPOTIFY_PASSWORD в переменных окружения Jenkins.\n"
+            "Убедитесь, что вы настроили 'Use secret text(s) or file(s)' в 'Build Environment'."
+        )
+
+    creds = {
+        "username": username,
+        "password": password,
+        "expected_name": expected_name
+    }
+
     print(f"\nDEBUG: Используются учетные данные: {creds['username']}")
     return creds
