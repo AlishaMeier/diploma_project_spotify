@@ -34,9 +34,9 @@ def browser_language(request):
     return request.config.getoption('--language')
 
 
-#@pytest.fixture(scope="session", autouse=True)
-#def load_env():
-#    load_dotenv()
+@pytest.fixture(scope="session", autouse=True)
+def load_env():
+    load_dotenv()
 
 
 @pytest.fixture(scope="function", autouse=True)
