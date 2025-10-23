@@ -11,13 +11,23 @@ from spotify_project.utils import attach_web
 def pytest_addoption(parser):
     parser.addoption(
         '--browser_version',
-        default='127.0'
+        default='128.0'
+    )
+    parser.addoption(
+        '--language',
+        default='ru',
+        help='Choose browser language: ru, en, etc.'
     )
 
 
 @pytest.fixture(scope='session')
 def browser_version(request):
     return request.config.getoption('--browser_version')
+
+
+@pytest.fixture(scope='session')
+def browser_language(request):
+    return request.config.getoption('--language')
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -56,7 +66,7 @@ browser.config.window_height = 1017
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup_browser(browser_version):
+def setup_browser(browser_version, browser_language):  # <--- Добавлен 'browser_language'
 
     login = os.getenv("SELENOID_LOGIN")
     password = os.getenv("SELENOID_PASS")
@@ -80,8 +90,14 @@ def setup_browser(browser_version):
 
     print(f"DEBUG: Попытка подключения к Selenoid по URL: {remote_url}")
     print(f"DEBUG: Запрашиваемая версия браузера: {browser_version}")
+    print(f"DEBUG: Запрашиваемый язык браузера: {browser_language}")  # <--- Строка для отладки
 
     options = Options()
+
+    options.add_argument(f'--lang={browser_language}')
+    options.add_experimental_option('prefs', {
+        'intl.accept_languages': browser_language
+    })
 
     selenoid_capabilities = {
         "browserName": "chrome",
