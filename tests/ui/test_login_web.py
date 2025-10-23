@@ -47,8 +47,8 @@ def test_invalid_password(login_page: LoginPage, navigation_page: NavigationPage
     with allure.step("Выполняем полную авторизацию с НЕВЕРНЫМ паролем"):
         login_page.login(valid_username, wrong_password)
 
-    with allure.step("Проверить отображение системной ошибки"):
-        login_page.should_see_error_message(ERROR_INVALID_CREDS)
+    with allure.step("Проверить отображение ЛЮБОЙ системной ошибки"):
+        login_page.should_see_generic_error_message(ERROR_INVALID_CREDS)
 
 
 @pytest.mark.ui
@@ -65,7 +65,7 @@ def test_login_with_empty_fields(login_page: LoginPage, navigation_page: Navigat
         login_page.attempt_to_continue_with_empty_username()
 
     with allure.step("Проверить отображение сообщений о необходимости заполнения"):
-        login_page.should_see_error_message(ERROR_REQUIRED_FIELD)
+        login_page.should_see_field_error_message(ERROR_REQUIRED_FIELD)
 
 
 @pytest.mark.ui
@@ -86,4 +86,4 @@ def test_invalid_login_with_parameters(username, password, expected_error, login
         login_page.enter_username_and_continue(username)
 
     with allure.step("Проверить отображение сообщения об ошибке: '{expected_error}'"):
-        login_page.should_see_error_message(expected_error)
+        login_page.should_see_generic_error_message(expected_error)
