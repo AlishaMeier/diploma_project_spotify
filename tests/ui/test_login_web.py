@@ -13,6 +13,23 @@ INVALID_LOGIN_DATA = [
     ("whoami@c.com", "любой_пароль", ERROR_NOT_LINKED)
 ]
 
+@pytest.mark.ui
+@allure.feature("Авторизация")
+@allure.story("Тест на успешную авторизацию")
+@allure.label("owner", "AlishaMeier")
+@allure.tag("positive", "critical")
+@allure.severity(allure.severity_level.CRITICAL)
+def test_login(credentials, login_page: LoginPage, navigation_page: NavigationPage):
+    with allure.step("Переход на страницу авторизации с главной"):
+        navigation_page.navigate_to_login()
+        current_url = browser.driver.current_url
+        print(f"DEBUG: Current URL after navigate_to_login: {current_url}")
+
+    with allure.step("Выполнение полной авторизации"):
+        login_page.login(credentials["username"], credentials["password"])
+
+    with allure.step("Проверка успешного входа"):
+        login_page.should_be_logged_in()
 
 @pytest.mark.ui
 @allure.feature("Авторизация")
