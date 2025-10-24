@@ -93,7 +93,7 @@ def setup_browser(browser_version, browser_language):  # <--- Добавлен '
     browser.open("/")
 
     try:
-        cookie_button = browser.element('#onetrust-reject-all-handler')
+        cookie_button = browser.element('#onetrust-accept-all-handler')
         if cookie_button.with_(timeout=2).wait_until(be.visible):
             cookie_button.click()
     except Exception as e:
