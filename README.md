@@ -168,11 +168,10 @@
 1.  **Настройте приложение в Spotify Dashboard** (делается один раз):
     * Перейдите в [Dashboard](https://api.spotify.com/v1/me) и создайте новое приложение.
     * В настройках приложения (`Settings`) добавьте `https://example.com/callback` в поле **Redirect URIs** и сохраните изменения.
-    > ***Пример*** – `![Пример](https://accounts.spotify.com/authorize?response_type=code&client_id=19889471979142c990ed44cbc9982d57&scope=playlist-modify-public%20playlist-modify-private%20user-read-private%20user-follow-modify%20user-library-modify%20playlist-modify-public%20user-library-read%20user-follow-modify%20playlist-modify-private%20ugc-image-upload%20user-read-email&redirect_uri=https://aboba:3354/callback)`
 
 2.  **Сформируйте и перейдите по ссылке для авторизации**:
     * Соберите URL, подставив ваш `client_id` и необходимые `scopes`.
-    * Пример ссылки со всеми нужными правами – `[...вставь свою ссылку сюда...]`
+    * Пример ссылки со всеми нужными правами – `![Пример](https://accounts.spotify.com/authorize?response_type=code&client_id=19889471979142c990ed44cbc9982d57&scope=playlist-modify-public%20playlist-modify-private%20user-read-private%20user-follow-modify%20user-library-modify%20playlist-modify-public%20user-library-read%20user-follow-modify%20playlist-modify-private%20ugc-image-upload%20user-read-email&redirect_uri=https://aboba:3354/callback)`
     * Перейдите по ссылке, войдите в Spotify и разрешите доступ.
 
 3.  **Обменяйте `code` на `access_token`**:
