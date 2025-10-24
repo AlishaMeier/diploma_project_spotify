@@ -52,14 +52,16 @@ class LoginPage:
             self.PROFILE_ICON.should(be.visible).should(have.attribute('aria-label').value(expected_user_name))
         return self
 
-    @allure.step("Проверяем отображение общего сообщения об ошибке: '{expected_error_text}'")
+    @allure.step("Проверяем отображение общего сообщения об ошибке (баннер): '{expected_error_text}'")
     def should_see_generic_error_message(self, expected_error_text):
-        error_element = self.error_message_generic(expected_error_text)
-        error_element.should(be.visible)
+        error_element = browser.element('[data-encore-id="banner"] span')
+
+        error_element.should(be.visible).should(have.text(expected_error_text))
         return self
 
     @allure.step("Проверяем отображение ошибки ПОД ПОЛЕМ: '{expected_error_text}'")
     def should_see_field_error_message(self, expected_error_text):
-        error_element = browser.element('[data-testid*="-error"] span')
+        error_element = browser.element('[data-testid="username-error"] span')
+
         error_element.should(be.visible).should(have.text(expected_error_text))
         return self
