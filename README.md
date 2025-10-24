@@ -4,7 +4,6 @@
   <img src="assets/img/spotify_automation_project.svg" width="80%" alt="Spotify Automation Testing Project"/>
 </p>
 
-# Spotify Automation Testing Project
 
 ## 📘 О проекте  
 **Spotify Automation Testing Project** — это дипломный проект, цель которого — продемонстрировать навыки автоматизации тестирования API и UI для реального веб-приложения.  
