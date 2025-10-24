@@ -10,7 +10,7 @@ ERROR_REQUIRED_FIELD = "Введите имя пользователя или а
 
 
 INVALID_LOGIN_DATA = [
-    ("nwas_aasignnn@c.com", "любой_пароль", ERROR_NOT_LINKED)
+    ("whoami@c.com", "любой_пароль", ERROR_NOT_LINKED)
 ]
 
 @pytest.mark.ui
