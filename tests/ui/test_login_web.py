@@ -21,7 +21,7 @@ INVALID_LOGIN_DATA = [
 @allure.tag("negative", "login_creds")
 @allure.severity(allure.severity_level.NORMAL)
 def test_invalid_password(login_page: LoginPage, navigation_page: NavigationPage):
-    valid_username = "alishazzzz@icloud.com"
+    valid_username = "alisha.meyerr@gmail.com"
     wrong_password = "wrong_password_123"
 
     with allure.step("Переход на страницу авторизации"):
