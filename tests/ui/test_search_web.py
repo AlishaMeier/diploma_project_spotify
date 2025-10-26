@@ -101,8 +101,9 @@ class TestSearchFunctionality:
             navigation_page.open_main_page()
             search_page.search_from_main_page(query_with_typo)
 
-        with allure.step(f"Проверить, что в основном результате есть исполнитель '{corrected_artist}'"):
-            search_page.first_main_result_title.should(be.visible).should(have.text(corrected_artist))
+        with allure.step(f"Проверить, что в топ-результате есть исполнитель '{corrected_artist}'"):
+            search_page.top_result_card.should(be.visible)
+            search_page.top_result_artist.should(be.visible).should(have.text(corrected_artist))
 
     @pytest.mark.ui
     @allure.story("Негативный поиск: не найдено результатов")
