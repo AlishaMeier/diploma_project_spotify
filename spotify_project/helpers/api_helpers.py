@@ -20,7 +20,6 @@ class PlaylistApi:
         assert response.status_code == expected_status_code, \
             f"Ожидался код {expected_status_code}, получен {response.status_code}. Тело: {response.text}"
 
-        # [Пункт 8] Валидация схемы перенесена внутрь
         if response.status_code == 200:
             model = Playlist.model_validate(response.json())
             return response, model

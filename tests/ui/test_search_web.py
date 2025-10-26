@@ -38,7 +38,7 @@ class TestSearchFunctionality:
         artist_name = "BTS"
 
         with allure.step(f"Открыть главную и выполнить поиск артиста '{artist_name}'"):
-            navigation_page.open_main_page() # <-- [Пункт 2]
+            navigation_page.open_main_page()
             search_page.search_from_main_page(artist_name)
 
         with allure.step("Проверить, что в топе есть карточка артиста"):
@@ -60,7 +60,7 @@ class TestSearchFunctionality:
         expected_artist = "BTS"
 
         with allure.step(f"Открыть главную и выполнить поиск альбома '{album_name}'"):
-            navigation_page.open_main_page()  # <-- [Пункт 2]
+            navigation_page.open_main_page()
             search_page.search_from_main_page(album_name)
 
         with allure.step("Проверить, что топ-результат - это альбом с правильными деталями"):
@@ -77,7 +77,7 @@ class TestSearchFunctionality:
         expected_artist_type = "Исполнитель"
 
         with allure.step(f"Открыть главную и выполнить поиск по запросу '{query}'"):
-            navigation_page.open_main_page()  # <-- [Пункт 2]
+            navigation_page.open_main_page()
             search_page.search_from_main_page(query)
 
         with allure.step("Нажать на фильтр 'Исполнители'"):

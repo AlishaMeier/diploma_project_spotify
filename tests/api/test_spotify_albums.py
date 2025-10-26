@@ -1,6 +1,5 @@
 import allure
 import pytest
-from spotify_project.schemas.album import GetSavedAlbumsResponse
 
 ALBUM_ID_FOR_TESTS = "3DmDoHxAeEiDFNWrHSKAdQ"
 
@@ -8,7 +7,7 @@ ALBUM_ID_FOR_TESTS = "3DmDoHxAeEiDFNWrHSKAdQ"
 @pytest.mark.api
 @allure.feature("API: Медиатека")
 @allure.label("owner", "AlishaMeier")
-class TestAlbums: 
+class TestAlbums:
 
     @allure.story("Добавление и проверка альбома")
     @allure.tag("positive", "api", "smoke")
@@ -46,7 +45,7 @@ class TestAlbums:
     def test_save_non_existent_album(self, library_api):
         invalid_album_id = "invalid_album_id_12345"
 
-        response = library_api.save_album(
+        _ = library_api.save_album(
             invalid_album_id,
             expected_status_code=400 # <-- [Пункт 12]
         )
