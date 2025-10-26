@@ -27,7 +27,6 @@ class PlaylistApi:
         return response, model
 
     @allure.step("API: Добавить трек {track_uri} в плейлист {playlist_id}")
-    # [ИСПРАВЛЕНИЕ Type hint] -> tuple[]
     def add_track_to_playlist(self, playlist_id: str, track_uri: str, expected_status_code: int = 201) -> tuple[
         requests.Response, Optional[AddTrackResponse]]:
         endpoint = f"/playlists/{playlist_id}/tracks"
