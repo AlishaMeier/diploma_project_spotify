@@ -23,7 +23,6 @@ class PlaylistApi:
         model = None
         if expected_status_code < 400:
             model = Playlist.model_validate(response.json())
-
         return response, model
 
     @allure.step("API: Добавить трек {track_uri} в плейлист {playlist_id}")
@@ -39,7 +38,6 @@ class PlaylistApi:
         model = None
         if expected_status_code < 400:
             model = AddTrackResponse.model_validate(response.json())
-
         return response, model
 
     @allure.step("API: Удалить трек из плейлиста {playlist_id}")
@@ -55,7 +53,6 @@ class PlaylistApi:
         model = None
         if expected_status_code < 400:
             model = AddTrackResponse.model_validate(response.json())
-
         return response, model
 
     @allure.step("API: Создать плейлист для пользователя {user_id}")
@@ -71,17 +68,14 @@ class PlaylistApi:
         model = None
         if expected_status_code < 400:
             model = Playlist.model_validate(response.json())
-
         return response, model
 
     @allure.step("API: Удалить плейлист {playlist_id}")
     def unfollow_playlist(self, playlist_id: str, expected_status_code: int = 200) -> requests.Response:
         endpoint = f"/playlists/{playlist_id}/followers"
         response = api_request(self.base_url, endpoint, method="DELETE", headers=self.headers)
-
         assert response.status_code == expected_status_code, \
             f"Ожидался код {expected_status_code}, получен {response.status_code}. Тело: {response.text}"
-
         return response
 
     @allure.step("API: Загрузить обложку для плейлиста {playlist_id}")
@@ -128,7 +122,6 @@ class LibraryApi:
         model = None
         if expected_status_code < 400:
             model = GetSavedAlbumsResponse.model_validate(response.json())
-
         return response, model
 
     @allure.step("API: Удалить альбом с ID {album_id} из медиатеки")
