@@ -30,7 +30,7 @@ def test_follow_and_unfollow_artist(library_api):
 def test_follow_non_existent_artist(library_api):
     invalid_artist_id = "invalid_artist_id_12345"
 
-    response = library_api.follow_artist(invalid_artist_id)
-
-    with allure.step("Проверяем, что код ответа 400 (Bad Request)"):
-        assert response.status_code == 400, "Ожидался код 400 при подписке на несуществующего артиста"
+    library_api.follow_artist(
+        invalid_artist_id,
+        expected_status_code=400
+    )
