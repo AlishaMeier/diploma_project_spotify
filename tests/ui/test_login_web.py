@@ -15,11 +15,10 @@ class TestLogin:
     @allure.tag("positive", "critical")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_login(self, credentials, login_page: LoginPage, navigation_page: NavigationPage):
-        with allure.step("Открыть главную и перейти на страницу авторизации"):
-            navigation_page.open_main_page()
-            navigation_page.navigate_to_login()
-            current_url = browser.driver.current_url
-            print(f"DEBUG: Current URL after navigate_to_login: {current_url}")
+        navigation_page.open_main_page()
+        navigation_page.navigate_to_login()
+        current_url = browser.driver.current_url
+        print(f"DEBUG: Current URL after navigate_to_login: {current_url}")
 
         login_page.login(credentials["username"], credentials["password"])
         login_page.should_be_logged_in(credentials["expected_name"])
@@ -31,10 +30,8 @@ class TestLogin:
         valid_username = LoginData.VALID_USERNAME
         wrong_password = LoginData.WRONG_PASSWORD
 
-        with allure.step("Открыть главную и перейти на страницу авторизации"):
-            navigation_page.open_main_page()
-            navigation_page.navigate_to_login()
-
+        navigation_page.open_main_page()
+        navigation_page.navigate_to_login()
         login_page.login(valid_username, wrong_password)
         login_page.should_see_invalid_creds_error()
 
@@ -42,10 +39,8 @@ class TestLogin:
     @allure.tag("negative", "UI_validation")
     @allure.severity(allure.severity_level.MINOR)
     def test_login_with_empty_fields(self, login_page: LoginPage, navigation_page: NavigationPage):
-        with allure.step("Открыть главную и перейти на страницу авторизации"):
-            navigation_page.open_main_page()
-            navigation_page.navigate_to_login()
-
+        navigation_page.open_main_page()
+        navigation_page.navigate_to_login()
         login_page.attempt_to_continue_with_empty_username()
         login_page.should_see_required_field_error()
 
@@ -59,9 +54,7 @@ class TestLogin:
     def test_invalid_login_with_parameters(self, username, password,
                                            login_page: LoginPage,
                                            navigation_page: NavigationPage):
-        with allure.step("Открыть главную и перейти на страницу авторизации"):
-            navigation_page.open_main_page()
-            navigation_page.navigate_to_login()
-
+        navigation_page.open_main_page()
+        navigation_page.navigate_to_login()
         login_page.enter_username_and_continue(username)
         login_page.should_see_not_linked_error()
