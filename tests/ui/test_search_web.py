@@ -6,7 +6,7 @@ from spotify_project.pages.artist_page import ArtistPage
 from selene import be, have, browser
 
 INVALID_SEARCH_DATA = [
-    (" ", "По запросу « » ничего не найдено"),
+    (" ", "По запросу " " ничего не найдено"),
 ]
 
 @allure.epic("UI-тестирование")
