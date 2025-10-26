@@ -1,10 +1,17 @@
 import pytest
 import os
+import logging
 from dotenv import load_dotenv
 from selene import browser, be
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from spotify_project.utils import attach_web
+from spotify_project.pages.login_page import LoginPage
+from spotify_project.pages.navigation_page import NavigationPage
+from spotify_project.pages.search_page import SearchPage
+from spotify_project.pages.artist_page import ArtistPage
+
+logger = logging.getLogger(__name__)
 
 browser.config.base_url = "https://spotify.com"
 browser.config.timeout = 15.0
@@ -59,7 +66,7 @@ def setup_browser(browser_version, browser_language, driver_type):
     })
 
     if driver_type == 'selenoid':
-        print("\nDEBUG: Запуск тестов в Selenoid")
+        logger.info("\nDEBUG: Запуск тестов в Selenoid")
         login = os.getenv("SELENOID_LOGIN")
         password = os.getenv("SELENOID_PASS")
         selenoid_base_url = os.getenv("SELENOID_URL")
@@ -73,7 +80,7 @@ def setup_browser(browser_version, browser_language, driver_type):
         except Exception as e:
             raise ValueError(f"Ошибка при формировании URL для Selenoid: {e}")
 
-        print(f"DEBUG: Подключение к Selenoid по URL: {remote_url}")
+        logger.info(f"DEBUG: Подключение к Selenoid по URL: {remote_url}")
 
         selenoid_capabilities = {
             "browserName": "chrome",
@@ -91,65 +98,36 @@ def setup_browser(browser_version, browser_language, driver_type):
         )
 
     elif driver_type == 'local':
-        print("\nDEBUG: Запуск тестов в локальном Chrome")
-        # Убедитесь, что chromedriver установлен и доступен в PATH
+        logger.info("\nDEBUG: Запуск тестов в локальном Chrome")
         driver = webdriver.Chrome(options=options)
 
     else:
         raise ValueError(f"Неизвестный --driver-type: {driver_type}. Доступны: local, selenoid")
 
     browser.config.driver = driver
-    browser.open("/")
 
-    try:
-        cookie_button = browser.element('#onetrust-reject-all-handler')
-        if cookie_button.with_(timeout=2).wait_until(be.visible):
-            cookie_button.click()
-    except Exception as e:
-        print(f"Не удалось нажать кнопку cookie: {e}")
 
     yield
 
-    try:
-        attach_web.add_screenshot_page(browser)
-    except Exception as e:
-        print(f"Failed to attach screenshot: {e}")
-    try:
-        attach_web.add_browser_logs(browser)
-    except Exception as e:
-        print(f"Failed to attach logs: {e}")
-    try:
-        attach_web.add_html_page_source(browser)
-    except Exception as e:
-        print(f"Failed to attach html: {e}")
-
-    # Видео аттачим ТОЛЬКО если это был Selenoid
-    if driver_type == 'selenoid':
-        try:
-            attach_web.add_video_from_selenoid(browser)
-        except Exception as e:
-            print(f"Failed to attach video: {e}")
+    add_all_attachments(browser, driver_type) # одна функция для всех аттачей
 
     browser.quit()
 
 
+def _safe_attach(attach_func, *args, name="attachment"):
+# обертка try-except
+    try:
+        attach_func(*args)
+    except Exception as e:
+        logger.warning(f"Failed to attach {name}: {e}")
 
-@pytest.fixture
-def login_page():
-    from spotify_project.pages.login_page import LoginPage
-    return LoginPage()
+def add_all_attachments(browser_instance, driver_type):
+    _safe_attach(attach_web.add_screenshot_page, browser_instance, name="screenshot")
+    _safe_attach(attach_web.add_browser_logs, browser_instance, name="logs")
+    _safe_attach(attach_web.add_html_page_source, browser_instance, name="html")
 
-
-@pytest.fixture
-def navigation_page():
-    from spotify_project.pages.navigation_page import NavigationPage
-    return NavigationPage()
-
-
-@pytest.fixture
-def search_page():
-    from spotify_project.pages.search_page import SearchPage
-    return SearchPage()
+    if driver_type == 'selenoid':
+        _safe_attach(attach_web.add_video_from_selenoid, browser_instance, name="video")
 
 
 @pytest.fixture
@@ -171,3 +149,23 @@ def credentials():
 
     print(f"\nDEBUG: Используются учетные данные: {creds['username']}")
     return creds
+
+
+@pytest.fixture
+def login_page():
+    return LoginPage()
+
+
+@pytest.fixture
+def navigation_page():
+    return NavigationPage()
+
+
+@pytest.fixture
+def search_page():
+    return SearchPage()
+
+
+@pytest.fixture
+def artist_page():
+    return ArtistPage()
